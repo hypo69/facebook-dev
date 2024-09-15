@@ -1,5 +1,4 @@
 ﻿## \file ../src/advertisement/facebook/promoter.py
-## \file ../src/advertisement/facebook/promoter.py
 # -*- coding: utf-8 -*-
 #! /usr/share/projects/hypotez/venv/scripts python
 """!
