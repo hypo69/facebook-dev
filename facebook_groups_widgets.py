@@ -1,7 +1,7 @@
 ## \file ../src/advertisement/facebook/facebook_groups_widgets.py
 # -*- coding: utf-8 -*-
-#! /usr/share/projects/hypotez/venv/scripts python
-"""! Раскрывающеся меню выбора групп для подачи объвления"""
+# /path/to/interpreter/python
+""" Раскрывающеся меню выбора групп для подачи объвления"""
 
 import header 
 from IPython.display import display
@@ -11,10 +11,10 @@ from types import SimpleNamespace
 from pathlib import Path
 
 class FacebookGroupsWidget:
-    """! Создает выпадающий список с URL групп Facebook из предоставленного JSON."""
+    """ Создает выпадающий список с URL групп Facebook из предоставленного JSON."""
 
     def __init__(self, json_file_path: Path):
-        """!
+        """
         Инициализация виджета с выпадающим списком для групп Facebook.
 
         Args:
@@ -24,7 +24,7 @@ class FacebookGroupsWidget:
         self.dropdown = self.create_dropdown()
 
     def create_dropdown(self) -> Dropdown:
-        """! Создает и возвращает виджет выпадающего списка на основе данных групп.
+        """ Создает и возвращает виджет выпадающего списка на основе данных групп.
 
         Returns:
             Dropdown: Виджет выпадающего списка с URL групп Facebook.
@@ -38,7 +38,7 @@ class FacebookGroupsWidget:
         return dropdown
 
     def display_widget(self):
-        """! Отображает виджет выпадающего списка."""
+        """ Отображает виджет выпадающего списка."""
         display(self.dropdown)
 
 

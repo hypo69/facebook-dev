@@ -1,8 +1,8 @@
 ﻿## \file ../src/advertisement/facebook/scenarios/post_message.py
 ## \file ../src/advertisement/facebook/scenarios/post_message.py
 # -*- coding: utf-8 -*-
-#! /usr/share/projects/hypotez/venv/scripts python
-"""! Публикация сообщения """
+# /path/to/interpreter/python
+""" Публикация сообщения """
 ...
 from socket import timeout
 import time
@@ -10,7 +10,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Dict, List
 from selenium.webdriver.remote.webelement import WebElement
-from src.settings import gs
+from src import gs
 from src.webdriver import Driver
 from src.utils import j_loads_ns, pprint
 from src.logger import logger
@@ -21,7 +21,7 @@ locator: SimpleNamespace = j_loads_ns(
 )
 
 def post_title(d: Driver, category: SimpleNamespace) -> bool:
-    """! Sends the title and description of a campaign to the post message box.
+    """ Sends the title and description of a campaign to the post message box.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -57,7 +57,7 @@ def post_title(d: Driver, category: SimpleNamespace) -> bool:
     return True
 
 def upload_media(d: Driver, products: List[SimpleNamespace], no_video: bool = False) -> bool:
-    """! Uploads media files to the images section and updates captions.
+    """ Uploads media files to the images section and updates captions.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -118,7 +118,7 @@ def upload_media(d: Driver, products: List[SimpleNamespace], no_video: bool = Fa
 
 
 def update_images_captions(d: Driver, products: List[SimpleNamespace], textarea_list: List[WebElement]) -> bool:
-    """! Adds descriptions to uploaded media files.
+    """ Adds descriptions to uploaded media files.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -131,14 +131,15 @@ def update_images_captions(d: Driver, products: List[SimpleNamespace], textarea_
     local_units = j_loads_ns(Path(gs.path.src / 'advertisement' / 'facebook' / 'scenarios' / 'translations.json'))
 
     def handle_product(product: SimpleNamespace, textarea_list: List[WebElement], i: int) -> bool:
-        """! Handles the update of media captions for a single product.
+        """ Handles the update of media captions for a single product.
 
         Args:
             product (SimpleNamespace): The product to update.
             textarea_list (List[WebElement]): List of textareas where captions are added.
             i (int): Index of the product in the list.
         """
-        direction = getattr(local_units.LOCALE, product.language, "LTR")
+        lang =  lang
+        direction = getattr(local_units.LOCALE, lang , "LTR")
         message = ""
 
         # Add product details to message.
@@ -147,35 +148,35 @@ def update_images_captions(d: Driver, products: List[SimpleNamespace], textarea_
                 if hasattr(product, 'product_title'):
                     message += f"{product.product_title}\n"
                 if hasattr(product, 'original_price'):
-                    message += f"{getattr(local_units.original_price, product.language)}: {product.original_price}\n"
+                    message += f"{getattr(local_units.original_price, lang)}: {product.original_price}\n"
                 if hasattr(product, 'sale_price'):
-                    message += f"{getattr(local_units.sale_price, product.language)}: {product.sale_price}\n"
+                    message += f"{getattr(local_units.sale_price, lang)}: {product.sale_price}\n"
                 if hasattr(product, 'discount'):
-                    message += f"{getattr(local_units.discount, product.language)}: {product.discount}\n"
+                    message += f"{getattr(local_units.discount, lang)}: {product.discount}\n"
                 if hasattr(product, 'evaluate_rate'):
-                    message += f"{getattr(local_units.evaluate_rate, product.language)}: {product.evaluate_rate}\n"
+                    message += f"{getattr(local_units.evaluate_rate, lang)}: {product.evaluate_rate}\n"
                 if hasattr(product, 'promotion_link'):
-                    message += f"{getattr(local_units.promotion_link, product.language)}: {product.promotion_link}\n"
+                    message += f"{getattr(local_units.promotion_link, lang)}: {product.promotion_link}\n"
                 if hasattr(product, 'tags'):
-                    message += f"{getattr(local_units.tags, product.language)}: {product.tags}\n"
-                message += f"{getattr(local_units.COPYRIGHT, product.language)}"
+                    message += f"{getattr(local_units.tags, lang)}: {product.tags}\n"
+                message += f"{getattr(local_units.COPYRIGHT, lang)}"
                 
             else:  # RTL direction
                 if hasattr(product, 'product_title'):
                     message += f"\n{product.product_title}"
                 if hasattr(product, 'original_price'):
-                    message += f"\n{product.original_price} :{getattr(local_units.original_price, product.language)}"
+                    message += f"\n{product.original_price} :{getattr(local_units.original_price, lang)}"
                 if hasattr(product, 'discount'):
-                    message += f"\n{product.discount} :{getattr(local_units.discount, product.language)}"
+                    message += f"\n{product.discount} :{getattr(local_units.discount, lang)}"
                 if hasattr(product, 'sale_price'):
-                    message += f"\n{product.sale_price} :{getattr(local_units.sale_price, product.language)}"
+                    message += f"\n{product.sale_price} :{getattr(local_units.sale_price, lang)}"
                 if hasattr(product, 'evaluate_rate'):
-                    message += f"\n{product.evaluate_rate} :{getattr(local_units.evaluate_rate, product.language)}"
+                    message += f"\n{product.evaluate_rate} :{getattr(local_units.evaluate_rate, lang)}"
                 if hasattr(product, 'promotion_link'):
-                    message += f"\n{product.promotion_link} :{getattr(local_units.promotion_link, product.language)}"
+                    message += f"\n{product.promotion_link} :{getattr(local_units.promotion_link, lang)}"
                 if hasattr(product, 'tags'):
-                    message += f"\n{product.tags} :{getattr(local_units.tags, product.language)}"
-                message += f"\n{getattr(local_units.COPYRIGHT, product.language)}"
+                    message += f"\n{product.tags} :{getattr(local_units.tags, lang)}"
+                message += f"\n{getattr(local_units.COPYRIGHT, lang)}"
                 
         except Exception as ex:
             logger.error("Error in message generation", ex, exc_info=True)
@@ -196,7 +197,7 @@ def update_images_captions(d: Driver, products: List[SimpleNamespace], textarea_
 
 
 def promote_post(d: Driver, category: SimpleNamespace, products: List[SimpleNamespace], no_video: bool = False) -> bool:
-    """! Manages the process of promoting a post with a title, description, and media files.
+    """ Manages the process of promoting a post with a title, description, and media files.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -229,7 +230,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Dict, List
 from selenium.webdriver.remote.webelement import WebElement
-from src.settings import gs
+from src import gs
 from src.webdriver import Driver
 from src.utils import j_loads_ns, pprint
 from src.logger import logger
@@ -240,7 +241,7 @@ locator: SimpleNamespace = j_loads_ns(
 )
 
 def post_title(d: Driver, category: SimpleNamespace) -> bool:
-    """! Sends the title and description of a campaign to the post message box.
+    """ Sends the title and description of a campaign to the post message box.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -276,7 +277,7 @@ def post_title(d: Driver, category: SimpleNamespace) -> bool:
     return True
 
 def upload_media(d: Driver, products: List[SimpleNamespace], no_video: bool = False) -> bool:
-    """! Uploads media files to the images section and updates captions.
+    """ Uploads media files to the images section and updates captions.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -340,7 +341,7 @@ def upload_media(d: Driver, products: List[SimpleNamespace], no_video: bool = Fa
 
 
 def update_images_captions(d: Driver, products: List[SimpleNamespace], textarea_list: List[WebElement]) -> None:
-    """! Adds descriptions to uploaded media files.
+    """ Adds descriptions to uploaded media files.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -353,14 +354,15 @@ def update_images_captions(d: Driver, products: List[SimpleNamespace], textarea_
     local_units = j_loads_ns(Path(gs.path.src / 'advertisement' / 'facebook' / 'scenarios' / 'translations.json'))
 
     def handle_product(product: SimpleNamespace, textarea_list: List[WebElement], i: int) -> None:
-        """! Handles the update of media captions for a single product.
+        """ Handles the update of media captions for a single product.
 
         Args:
             product (SimpleNamespace): The product to update.
             textarea_list (List[WebElement]): List of textareas where captions are added.
             i (int): Index of the product in the list.
         """
-        direction = getattr(local_units.LOCALE, product.language, "LTR")
+        lang = product.language.upper()
+        direction = getattr(local_units.LOCALE, lang, "LTR")
         message = ""
 
         # Add product details to message.
@@ -368,54 +370,64 @@ def update_images_captions(d: Driver, products: List[SimpleNamespace], textarea_
             if direction == "LTR":
                 if hasattr(product, 'product_title'):
                     message += f"{product.product_title}\n"
+
                 if hasattr(product, 'original_price'):
-                    message += f"{getattr(local_units.original_price, product.language)}: {product.original_price}\n"
-                if hasattr(product, 'sale_price'):
-                    message += f"{getattr(local_units.sale_price, product.language)}: {product.sale_price}\n"
-                if hasattr(product, 'discount'):
-                    message += f"{getattr(local_units.discount, product.language)}: {product.discount}\n"
-                if hasattr(product, 'evaluate_rate'):
-                    message += f"{getattr(local_units.evaluate_rate, product.language)}: {product.evaluate_rate}\n"
+                    message += f"{getattr(local_units.original_price, lang)}: {product.original_price}\n"
+
+                if hasattr(product, 'sale_price') and hasattr(product, 'discount') and product.discount != '0%':
+                    message += f"{getattr(local_units.discount, lang)}: {product.discount}\n"
+                    message += f"{getattr(local_units.sale_price, lang)}: {product.sale_price}\n"
+
+                if hasattr(product, 'evaluate_rate') and product.evaluate_rate != '0.0%':
+                    message += f"{getattr(local_units.evaluate_rate, lang)}: {product.evaluate_rate}\n"
+
                 if hasattr(product, 'promotion_link'):
-                    message += f"{getattr(local_units.promotion_link, product.language)}: {product.promotion_link}\n"
+                    message += f"{getattr(local_units.promotion_link, lang)}: {product.promotion_link}\n"
+
                 if hasattr(product, 'tags'):
-                    message += f"{getattr(local_units.tags, product.language)}: {product.tags}\n"
-                message += f"{getattr(local_units.COPYRIGHT, product.language)}"
+                    message += f"{getattr(local_units.tags, lang)}: {product.tags}\n"
+                message += f"{getattr(local_units.COPYRIGHT, lang)}"
                 
             else:  # RTL direction
                 if hasattr(product, 'product_title'):
                     message += f"\n{product.product_title}"
+
                 if hasattr(product, 'original_price'):
-                    message += f"\n{product.original_price} :{getattr(local_units.original_price, product.language)}"
-                if hasattr(product, 'discount'):
-                    message += f"\n{product.discount} :{getattr(local_units.discount, product.language)}"
-                if hasattr(product, 'sale_price'):
-                    message += f"\n{product.sale_price} :{getattr(local_units.sale_price, product.language)}"
-                if hasattr(product, 'evaluate_rate'):
-                    message += f"\n{product.evaluate_rate} :{getattr(local_units.evaluate_rate, product.language)}"
+                    message += f"\n{product.original_price} :{getattr(local_units.original_price, lang)}"
+
+                if hasattr(product, 'sale_price') and hasattr(product, 'discount') and product.discount != '0%':
+                    message += f"\n{product.discount} :{getattr(local_units.discount, lang)}"
+                    message += f"\n{product.sale_price} :{getattr(local_units.sale_price, lang)}"
+
+                if hasattr(product, 'evaluate_rate') and product.evaluate_rate != '0.0%':
+                    message += f"\n{product.evaluate_rate} :{getattr(local_units.evaluate_rate, lang)}"
+
                 if hasattr(product, 'promotion_link'):
-                    message += f"\n{product.promotion_link} :{getattr(local_units.promotion_link, product.language)}"
+                    message += f"\n{product.promotion_link} :{getattr(local_units.promotion_link, lang)}"
+
                 if hasattr(product, 'tags'):
-                    message += f"\n{product.tags} :{getattr(local_units.tags, product.language)}"
-                message += f"\n{getattr(local_units.COPYRIGHT, product.language)}"
+                    message += f"\n{product.tags} :{getattr(local_units.tags, lang)}"
+                message += f"\n{getattr(local_units.COPYRIGHT, lang)}"
                 
         except Exception as ex:
             logger.error("Error in message generation", ex, exc_info=True)
+            return 
 
         # Send message to textarea.
         try:
-           textarea_list[i].send_keys(message) 
-           return True
+            textarea_list[i].send_keys(message) 
+            return True
         except Exception as ex:
             logger.error("Error in sending keys to textarea", ex)
+            return
 
     # Process products and update their captions.
     for i, product in enumerate(products):
         handle_product(product, textarea_list, i)
 
 
-def post_message(d: Driver, category: SimpleNamespace, products: List[SimpleNamespace], no_video: bool = False) -> bool:
-    """! Manages the process of promoting a post with a title, description, and media files.
+def post_message(d: Driver, category: SimpleNamespace,  no_video: bool = False) -> bool:
+    """ Manages the process of promoting a post with a title, description, and media files.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -432,7 +444,7 @@ def post_message(d: Driver, category: SimpleNamespace, products: List[SimpleName
         return
     d.wait(0.5)
 
-    if not upload_media(d, products, no_video): 
+    if not upload_media(d, category.products, no_video): 
         return
     if not d.execute_locator(locator = locator.finish_editing_button): 
         return

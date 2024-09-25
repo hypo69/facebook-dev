@@ -1,8 +1,8 @@
 ﻿## \file ../src/advertisement/facebook/scenarios/post_message.py
 ## \file ../src/advertisement/facebook/scenarios/post_message_async.py
 # -*- coding: utf-8 -*-
-#! /usr/share/projects/hypotez/venv/scripts python
-"""! Публикация сообщения из алиэкспресс промо """
+# /path/to/interpreter/python
+""" Публикация сообщения из алиэкспресс промо """
 
 import time
 import asyncio
@@ -10,7 +10,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Dict, List
 from selenium.webdriver.remote.webelement import WebElement
-from src.settings import gs
+from src import gs
 from src.webdriver import Driver
 from src.utils import j_loads_ns, pprint
 from src.logger import logger
@@ -21,7 +21,7 @@ locator: SimpleNamespace = j_loads_ns(
 )
 
 def post_title(d: Driver, category: SimpleNamespace) -> bool:
-    """! Sends the title and description of a campaign to the post message box.
+    """ Sends the title and description of a campaign to the post message box.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -57,7 +57,7 @@ def post_title(d: Driver, category: SimpleNamespace) -> bool:
     return True
 
 async def upload_media(d: Driver, products: List[SimpleNamespace], no_video:bool = False) -> bool:
-    """! Uploads media files to the images section and updates captions.
+    """ Uploads media files to the images section and updates captions.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -117,7 +117,7 @@ async def upload_media(d: Driver, products: List[SimpleNamespace], no_video:bool
 
 
 async def update_images_captions(d: Driver, products: List[SimpleNamespace], textarea_list: List[WebElement]) -> None:
-    """! Adds descriptions to uploaded media files asynchronously.
+    """ Adds descriptions to uploaded media files asynchronously.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -130,7 +130,7 @@ async def update_images_captions(d: Driver, products: List[SimpleNamespace], tex
     local_units = j_loads_ns(Path(gs.path.src / 'advertisement' / 'facebook' / 'scenarios' / 'translations.json'))
 
     def handle_product(product: SimpleNamespace, textarea_list: List[WebElement], i: int) -> None:
-        """! Handles the update of media captions for a single product synchronously.
+        """ Handles the update of media captions for a single product synchronously.
 
         Args:
             product (SimpleNamespace): The product to update.
@@ -192,7 +192,7 @@ async def update_images_captions(d: Driver, products: List[SimpleNamespace], tex
 
 
 async def promote_post(d: Driver, category: SimpleNamespace, products: List[SimpleNamespace], no_video:bool = False) -> bool:
-    """! Manages the process of promoting a post with a title, description, and media files.
+    """ Manages the process of promoting a post with a title, description, and media files.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.

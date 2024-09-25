@@ -1,7 +1,7 @@
-﻿"""! Сценарии фейсбука """
+﻿""" Сценарии фейсбука """
 ## \file ../src/advertisement/facebook/scenarios/__init__.py
 # -*- coding: utf-8 -*-
-#! /usr/share/projects/hypotez/venv/scripts python
+# /path/to/interpreter/python
 
 from packaging.version import Version
 from .version import __version__,  __doc__, __details__

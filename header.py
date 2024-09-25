@@ -1,7 +1,7 @@
 ## \file ../src/advertisement/facebook/header.py
 # -*- coding: utf-8 -*-
-#! /usr/share/projects/hypotez/venv/scripts python
-"""! Absolute path to modules  """
+# /path/to/interpreter/python
+""" Absolute path to modules  """
 
 import sys,os
 from pathlib import Path

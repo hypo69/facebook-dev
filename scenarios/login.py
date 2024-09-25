@@ -1,11 +1,11 @@
 ﻿## \file ../src/advertisement/facebook/scenarios/login.py
 ## \file ../src/advertisement/facebook/scenarios/login.py
 # -*- coding: utf-8 -*-
-"""! Facebook login scenario """
+""" Facebook login scenario """
 
 from pathlib import Path
 from typing import Dict
-from src.settings import gs
+from src import gs
 from src.webdriver import Driver
 from src.utils import j_loads, j_loads_ns, j_dumps
 from src.logger import logger
@@ -15,7 +15,7 @@ locators = j_loads_ns(
             Path(gs.path.src, 'advertisement', 'facebook', 'locators', 'login.json'))
 
 def login(d: Driver) -> bool:
-    """! Выполняет вход на Facebook.
+    """ Выполняет вход на Facebook.
 
     Функция использует переданный `Driver` для выполнения авторизации на Facebook, заполняя
     логин и пароль, а затем нажимает кнопку входа.

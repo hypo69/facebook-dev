@@ -1,14 +1,14 @@
-﻿"""! Переключение на аккунт. 
+﻿""" Переключение на аккунт. 
 Если есть кнопка `Переключить` - нажимаю её """
 
 ## \file ../src/advertisement/facebook/scenarios/switch_account.py
 # -*- coding: utf-8 -*-
-#! /usr/share/projects/hypotez/venv/scripts python
+# /path/to/interpreter/python
 
 ...
 from pathlib import Path
 
-from src.settings import gs
+from src import gs
 from src.webdriver import Driver
 from src.utils import j_loads_ns
 

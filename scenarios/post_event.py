@@ -1,7 +1,7 @@
 ## \file ../src/advertisement/facebook/scenarios/post_event.py
 # -*- coding: utf-8 -*-
-#! /usr/share/projects/hypotez/venv/scripts python
-"""! Публикация календарного события v группах фейсбук"""
+# /path/to/interpreter/python
+""" Публикация календарного события v группах фейсбук"""
 from socket import timeout
 import time
 from pathlib import Path
@@ -10,7 +10,7 @@ from typing import Dict, List
 from urllib.parse import urlencode
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.settings import gs
+from src import gs
 from src.webdriver import Driver
 from src.utils import j_loads_ns, pprint
 from src.logger import logger
@@ -21,7 +21,7 @@ locator: SimpleNamespace = j_loads_ns(
 )
 
 def post_title(d: Driver, event: SimpleNamespace) -> bool:
-    """! Sends the title of event.
+    """ Sends the title of event.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -44,7 +44,7 @@ def post_title(d: Driver, event: SimpleNamespace) -> bool:
     return True
 
 def post_date(d: Driver, event: SimpleNamespace) -> bool:
-    """! Sends the title of event.
+    """ Sends the title of event.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -68,7 +68,7 @@ def post_date(d: Driver, event: SimpleNamespace) -> bool:
     return True
 
 def post_time(d: Driver, event: SimpleNamespace) -> bool:
-    """! Sends the title of event.
+    """ Sends the title of event.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -92,7 +92,7 @@ def post_time(d: Driver, event: SimpleNamespace) -> bool:
     return True
 
 def post_description(d: Driver, event: SimpleNamespace) -> bool:
-    """! Sends the title of event.
+    """ Sends the title of event.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.
@@ -117,7 +117,7 @@ def post_description(d: Driver, event: SimpleNamespace) -> bool:
 
 
 def post_event(d: Driver, event: SimpleNamespace) -> bool:
-    """! Manages the process of promoting a post with a title, description, and media files.
+    """ Manages the process of promoting a post with a title, description, and media files.
 
     Args:
         d (Driver): The driver instance used for interacting with the webpage.

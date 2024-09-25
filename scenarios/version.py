@@ -1,4 +1,5 @@
-﻿__version__: str = '0.1'
+## \file ../src/advertisement/facebook/scenarios/version.py
+__version__: str = '0.1'
 __doc__: str = ''
 __details__: str = ''
 __author__: str = 'hypo69'
@@ -11,4 +12,4 @@ This project is licensed under the MIT License. See the [MIT License](https://op
 
 Commercial use of the code is prohibited without prior permission from the authors.
 """
-__cofee__: str = "Treat the developer to a cup of coffee for boosting enthusiasm in development: https://www.buymeacoffee.com/yourusername"
+__cofee__: str = "Treat the developer to a cup of coffee for boosting enthusiasm in development: https://boosty.to/hypo69"

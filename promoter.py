@@ -1,7 +1,8 @@
 ﻿## \file ../src/advertisement/facebook/promoter.py
+## \file ../src/advertisement/facebook/promoter.py
 # -*- coding: utf-8 -*-
-#! /usr/share/projects/hypotez/venv/scripts python
-"""!
+# /path/to/interpreter/python
+"""
 This module handles the promotion of messages and events in Facebook groups.
 It processes campaigns and events, posting them to Facebook groups while avoiding duplicate promotions.
 """
@@ -13,7 +14,7 @@ import re
 from urllib.parse import urlencode
 from types import SimpleNamespace
 
-from src.settings import gs
+from src import gs
 from src.webdriver import Driver, Chrome
 from src.suppliers.aliexpress.campaign import AliCampaignEditor
 from src.advertisement.facebook.scenarios import post_message, post_event
@@ -45,14 +46,16 @@ def get_event_url(group_url: str) -> str:
     return f"{base_url}?{query_string}"
 
 class FacebookPromoter:
-    """! Class for promoting AliExpress products and events in Facebook groups.
+    """ Class for promoting AliExpress products and events in Facebook groups.
     
     This class automates the posting of promotions to Facebook groups using a WebDriver instance,
     ensuring that categories and events are promoted while avoiding duplicates.
     """
-
+    d:Driver = None
+    group_file_paths: str | Path = None
+    no_video:bool = False
     def __init__(self, d: Driver, group_file_paths: list[str | Path] | str | Path, no_video: bool = False):
-        """! Initializes the promoter for Facebook groups.
+        """ Initializes the promoter for Facebook groups.
 
         Args:
             d (Driver): WebDriver instance for browser automation.
@@ -65,7 +68,7 @@ class FacebookPromoter:
         self.spinner = spinning_cursor()
 
     def parse_interval(self, interval: str) -> timedelta:
-        """! Converts a string interval to a timedelta object.
+        """ Converts a string interval to a timedelta object.
 
         Args:
             interval (str): Interval in string format (e.g., '1H', '6M').
@@ -88,7 +91,7 @@ class FacebookPromoter:
         return timedelta(hours=int(value)) if unit == "H" else timedelta(minutes=int(value))
 
     def promote(self, group: SimpleNamespace, item: SimpleNamespace, is_event: bool = False) -> bool:
-        """! Promotes a category or event in a Facebook group.
+        """ Promotes a category or event in a Facebook group.
 
         Args:
             group (SimpleNamespace): Group object with promotion data.
@@ -119,8 +122,8 @@ class FacebookPromoter:
         if is_event:
 
             ev = getattr(item.language, group.language )
-            ev.start = item.start
-            ev.end = item.end
+            ev.start = item.start  # <- Дата Начало мероприятия
+            ev.end = item.end      # <- Дата окончания мероприятия
             ev.promotional_link = item.promotional_link
             if not post_event(d=self.d, event=ev ):
                 logger.debug(f"Error while posting {'event' if is_event else 'category'} {item_name}", None, False)
@@ -135,13 +138,15 @@ class FacebookPromoter:
         if is_event:
             group.promoted_events.append(item_name)
         else:
-            group.promoted_categories[item_name] = timestamp
+            group.promoted_categories.append(item_name)
+            #group.promoted_categories[item_name] = timestamp
 
         group.last_promo_sended = timestamp
+        input("Next")
         return True
 
     def process_groups(self, campaign_name: str = None, events: list[SimpleNamespace] = None, is_event: bool = False, group_file_paths: list[str] = None):
-        """! Processes all groups for the current campaign or event promotion.
+        """ Processes all groups for the current campaign or event promotion.
 
         Args:
             group_file_paths (list[str]): List of file paths containing group data.
@@ -160,7 +165,7 @@ class FacebookPromoter:
         for group_file in group_file_paths:
             path_to_group_file: Path = gs.path.data / 'facebook' / 'groups' / group_file
             groups_ns: dict = j_loads_ns(path_to_group_file)
-            logger.info(f"Loaded groups from {group_file}")
+            #logger.info(f"Loaded groups from {group_file}")
 
             for group_url, group in vars(groups_ns).items():
                 group.group_url = group_url
@@ -172,19 +177,20 @@ class FacebookPromoter:
                 if not is_event:
                     # Only create AliCampaignEditor for campaigns, not for events
                     ce = AliCampaignEditor(campaign_name=campaign_name, language=group.language, currency=group.currency)
-                    items_to_promote = ce.campaign.category.values()
+                    items_to_promote = vars(ce.campaign.category).values()
                 else:
                     items_to_promote = events
 
                 for item in items_to_promote:
-                    logger.info(f"Start promoting {'event' if is_event else 'category'}: {item.event_name if is_event else item.category_name} for {group_url}")
-                    if not self.promote(group=group, item=item, is_event=is_event):
+                    #logger.info(f"Start promoting {'event' if is_event else 'category'}: {item.event_name if is_event else item.category_name} for {group_url}")
+                    item.products = ce.get_category_products(item.category_name) if not is_event else None                    
+                    if not self.promote(group=group, item=item,  is_event=is_event):
                         logger.debug(f"Failed to promote {'event' if is_event else 'category'}: {item.event_name if is_event else item.category_name}", None, False)
 
                 j_dumps(groups_ns, path_to_group_file)
 
     def check_interval(self, group: SimpleNamespace) -> bool:
-        """! Checks if the required interval has passed for the next promotion.
+        """ Checks if the required interval has passed for the next promotion.
 
         Args:
             group (SimpleNamespace): Group to check.
@@ -209,8 +215,8 @@ class FacebookPromoter:
             logger.error(f"Error parsing interval for group {group.group_url}: {e}")
             return False
 
-    def run_campaigns(self, campaigns: list[str], group_file_paths: list[str]):
-        """! Runs the campaign promotion cycle for all groups and categories sequentially.
+    def run_campaigns(self, campaigns: list[str], group_file_paths: list[str] = None):
+        """ Runs the campaign promotion cycle for all groups and categories sequentially.
 
         Args:
             campaigns (list[str]): List of campaign names to promote.
@@ -220,11 +226,11 @@ class FacebookPromoter:
             >>> promoter.run_campaigns(campaigns=["Campaign1", "Campaign2"], group_file_paths=["group1.json", "group2.json"])
         """
         for campaign_name in campaigns:
-            logger.info(f"Processing campaign: {campaign_name}")
-            self.process_groups(group_file_paths=group_file_paths, campaign_name=campaign_name)
+            #logger.info(f"Processing campaign: {campaign_name}")
+            self.process_groups(group_file_paths = group_file_paths if group_file_paths else self.group_file_paths, campaign_name = campaign_name)
 
     def run_events(self, events: list[SimpleNamespace], group_file_paths: list[str]):
-        """! Runs event promotion in all groups sequentially.
+        """ Runs event promotion in all groups sequentially.
 
         Args:
             events (list[SimpleNamespace]): List of events to promote.
@@ -237,7 +243,7 @@ class FacebookPromoter:
         self.process_groups(group_file_paths=group_file_paths, campaign_name="", is_event=True, events=events)
 
     def stop(self):
-        """! Stops the promotion process by quitting the WebDriver instance.
+        """ Stops the promotion process by quitting the WebDriver instance.
 
         Example:
             >>> promoter.stop()
